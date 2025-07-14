@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>رسالة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3845/3845696.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- وَقَاتِلُوا فِي سَبِيلِ اللَّهِ الَّذِينَ يُقَاتِلُونَكُمْ وَلَا تَعْتَدُوا ۚ إِنَّ اللَّهَ لَا يُحِبُّ الْمُعْتَدِينَ -->
+    <style>
+        
+        :root {
+            --bg-color: #000000;
+            --text-main: #ffffff;
+            --text-secondary: #b3b3b3;
+            --card-bg: rgba(18, 18, 18, 0.75);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --glow-white: #ffffff;
+            --blood-red: #E60026;
+            
+            --primary-expr: #00f6ff; 
+            --secondary-expr: #ff00f5; 
+        }
+
+        
+        * { box-sizing: border-box; }
+        html { scroll-snap-type: y mandatory; }
+        body {
+            margin: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-y: scroll; 
+            overflow-x: hidden;
+        }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 1100px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            animation-play-state: paused;
+        }
+        
+        .slide.active .content-wrapper { animation-play-state: running; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        
+        .hud {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+        }
+        #blood-text {
+            font-size: 18px; font-weight: 700; color: var(--blood-red);
+            filter: url(#blood-drip-filter);
+            text-shadow: 0 0 8px var(--blood-red), 0 0 15px rgba(255,0,0,0.7);
+            letter-spacing: 1px;
+        }
+        .logo { font-size: 24px; color: var(--text-main); text-shadow: 0 0 5px var(--glow-white); }
+        .logo i { margin-left: 8px; }
+
+        
+        .title {
+            font-size: clamp(3rem, 10vw, 7rem); font-weight: 700; color: var(--text-main);
+            text-shadow: 0 0 10px var(--glow-white), 0 0 25px var(--glow-white), 0 0 50px rgba(255, 255, 255, 0.5);
+            animation: text-pulse 4s ease-in-out infinite;
+        }
+        @keyframes text-pulse { 50% { text-shadow: 0 0 15px var(--glow-white), 0 0 35px var(--glow-white), 0 0 65px rgba(255, 255, 255, 0.5); } }
+
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        
+        .content-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 20px; padding: 40px; backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .content-card h1 { font-size: 48px; }
+        .content-card h2 { font-size: 38px; color: var(--text-main); margin-bottom: 25px; text-shadow: 0 0 8px var(--glow-white); }
+        .content-card p { font-size: 20px; line-height: 1.9; color: var(--text-secondary); }
+
+        .glow-frame-container {
+            position: relative;
+            padding: 3px;
+            border-radius: 23px;
+            overflow: hidden;
+        }
+        .glow-frame-container::before {
+            content: '';
+            position: absolute; top: 50%; left: 50%;
+            width: 200%; height: 200%; z-index: -1;
+            background: conic-gradient(from 90deg, var(--blood-red), transparent 30%, transparent);
+            transform: translate(-50%, -50%);
+            animation: rotate-glow 4s linear infinite;
+        }
+        @keyframes rotate-glow { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        
+        #expression-card h1 { color: var(--primary-expr); text-shadow: 0 0 15px var(--primary-expr); }
+        #expression-card h2 { color: var(--text-main); }
+        #expression-card .btn {
+            background-color: transparent; border: 2px solid var(--secondary-expr);
+            color: var(--secondary-expr); text-decoration: none; padding: 12px 25px;
+            border-radius: 50px; transition: all 0.3s;
+        }
+        #expression-card .btn:hover { background-color: var(--secondary-expr); color: #fff; box-shadow: 0 0 20px var(--secondary-expr); }
+        
+        .frankenstein-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        .copyright-frankenstein { font-size: 18px; color: var(--text-secondary); }
+        .telegram-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 15px 30px; border-radius: 12px;
+            background-color: #27A0DE; color: #fff;
+            text-decoration: none; font-size: 20px; font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(39, 160, 222, 0.5);
+        }
+        .telegram-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(39, 160, 222, 0.7);
+        }
+        
+    
+        #slide-nav { position: fixed; top: 50%; right: 30px; transform: translateY(-50%); z-index: 1001; display: flex; flex-direction: column; gap: 20px; }
+        #slide-nav a { width: 12px; height: 12px; background-color: rgba(255,255,255,0.3); border-radius: 50%; transition: all 0.3s ease; }
+        #slide-nav a.active { background-color: var(--glow-white); transform: scale(1.5); box-shadow: 0 0 10px var(--glow-white); }
+        
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; }
+            .content-card h2 { font-size: 32px; }
+            .content-card p { font-size: 18px; }
+            #blood-text { display: none; }
+        }
+    </style>
+</head>
+  <!-- الله يلعنك يا أخنوش اليهودي كل نهار لعنة الله عليكم -->
+<body>
+    <svg style="position:absolute; width:0; height:0;">
+      <filter id="blood-drip-filter">
+        <feTurbulence baseFrequency="0.01 0.04" numOctaves="3" seed="5" result="turbulence"/>
+        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="18" xChannelSelector="R" yChannelSelector="G"/>
+        <animate attributeName="baseFrequency" values="0.01 0.04;0.012 0.06;0.01 0.04" dur="8s" repeatCount="indefinite"/>
+      </filter>
+    </svg>
+
+    <div class="hud">
+        <div class="logo"><i class="fas fa-heartbeat"></i> <span> رسالتنا بسيطة</span></div>
+        <p id="blood-text">لا لتوطين الأفارقة في البلاد مطلب من الشعب.</p>
+    </div>
+
+    <div id="particles-js"></div>
+    <nav id="slide-nav"></nav>
+
+    <section id="slide-home" class="slide">
+        <div class="content-wrapper"><h1 id="animated-text" class="title"></h1></div>
+    </section>
+
+    <section id="slide-about" class="slide">
+        <div class="content-wrapper card-grid">
+            <div class="glow-frame-container">
+                <div class="content-card">
+                    <h2><i class="fas fa-users"></i> من نحن</h2>
+                    <p>نحن كمواطنين نناشد الدولة والجهات الحكومية المعنية بالتدخل من أجل معالجة هذا الوضع، واتخاذ ما يلزم لإعادة المهاجرين الأفارقة إلى بلدانهم، ورفض أي مسار يؤدي إلى توطينهم داخل البلاد. إرادة الشعب هي التي تحكم.</p>
+                </div>
+            </div>
+            <div class="glow-frame-container">
+                <div class="content-card">
+                    <h2><i class="fas fa-bullseye"></i> مهمتنا</h2>
+                    <p>كمغاربة أحرار، مهمتنا اليوم هي نفيقو الناس ونوعّيوهم باش يعرفو الخطر اللي كيمس أمن بلادنا، ونحميو الوطن من التوطين اللي كيشكل تهديد على الاستقرار والكرامة. إرادة الشعب واضحة، وحكمو هو اللي خصو يتحترم، وبإذن الله غادي يوصل صوته.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- الله يلعن بو الوزراة من الصغير للكبير واحد واحد و سلالة تاع طاسيلتو كاملة -->
+    <section id="slide-expression" class="slide">
+        <div class="content-wrapper">
+            <div id="expression-card" class="content-card"><h1>طرد المهاجرين ضرورة...</h1><p>نحن كمواطنين نناشد الدولة والجهات الحكومية المعنية بالتدخل العاجل والفوري من أجل معالجة هذا الوضع الذي أصبح يهدد تماسك المجتمع وأمن الوطن، وذلك باتخاذ التدابير اللازمة لإعادة المهاجرين غير النظاميين، وخصوصًا الأفارقة، إلى بلدانهم الأصلية، مع التأكيد على رفضنا القاطع لأي مسار أو سياسة من شأنها أن تؤدي إلى توطينهم داخل البلاد، لما يشكله ذلك من خطر على الأمن القومي، والنسيج الاجتماعي، واستقرار الوطن.
+
+            إرادة الشعب هي التي يجب أن تحكم، وصوت المواطنين الأحرار لا يُقصى ولا يُستهان به. بلادنا في حاجة إلى حماية هويتها، سيادتها، وأمنها. وهذا نداء وطني قبل أن يكون سياسيًا.
+
+            لهذا نؤكد أن مهمتنا كمواطنين أحرار ويقظين هي أن نفيقو الناس وننشروا الوعي، باش نحافظو على بلادنا نقية، مستقرة وآمنة. كنرفضو التوطين بأي شكل من الأشكال، لأنه كيهدد أمن البلاد، واستقرارها، وكرامة ولادها. حكم الشعب لراسو هو الإرادة الحقيقية، ومادام الشعب رافض، فالدولة مُلزمة باحترام إرادته، إن شاء الله.</p><div class="action-buttons"><a href="#" class="btn">اقرأ المزيد</a><a href="#" class="btn">شارك رأيك</a></div></div>
+        </div>
+    </section>
+    <!-- فَصْبِرْ صَبْرًا جَمِيلًا -->
+    <section id="slide-final" class="slide">
+        <div class="content-wrapper frankenstein-footer">
+            <p class="copyright-frankenstein">جميع الحقوق محفوظة لفرانكشتاين</p>
+
+            <p id="hashtag-text" class="hashtag-animation">
+                شارك الآن في هاشتاق  
+                <span>#لا_لتوطين_الافارقة_في_بلاد_المغرب_مطلب_الشعب</span>
+            </p>
+
+            <a href="https://t.me/franke_nstein" target="_blank" class="telegram-btn">
+                <i class="fab fa-telegram"></i> <span>تواصل معي</span>
+            </a>
+        </div>
+    </section>
+    <!-- انت من يرى هذا السورس اتريد الوصول لي فأنا أعطيتك منصة تواصل  -->
+    <style>
+    .hashtag-animation {
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        color: #fff;
+        background: linear-gradient(90deg, #ff0000, #ffa500, #ff0000);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glowText 4s ease-in-out infinite, fadeIn 2s ease forwards;
+        opacity: 0;
+        margin: 15px 0;
+    }
+
+    @keyframes glowText {
+        0%, 100% {
+            text-shadow: 0 0 6px #ff0000, 0 0 12px #ff8800;
+        }
+        50% {
+            text-shadow: 0 0 12px #ffffff, 0 0 20px #ff0000;
+        }
+    }
+
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+    </style>
+<!-- حنان حبك ليك جنون الله عليك يا حنان -->
+    <script>
+    window.addEventListener('load', () => {
+        const hashtagText = document.getElementById('hashtag-text');
+        setTimeout(() => {
+            hashtagText.style.opacity = '1';
+        }, 500);
+    });
+    </script>
+
+    <!-- — وعد من الله بالنصر لمن ينصر الحق. -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const navContainer = document.getElementById('slide-nav');
+            
+            slides.forEach((slide, index) => {
+                const dot = document.createElement('a');
+                dot.href = `#${slide.id}`;
+                navContainer.appendChild(dot);
+            });
+
+            const navDots = document.querySelectorAll('#slide-nav a');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const activeSlide = entry.target;
+                        activeSlide.classList.add('active');
+                        const activeIndex = Array.from(slides).indexOf(activeSlide);
+                        navDots.forEach(dot => dot.classList.remove('active'));
+                        if (navDots[activeIndex]) { navDots[activeIndex].classList.add('active'); }
+                    } else {
+                        entry.target.classList.remove('active');
+                    }
+                });
+            }, { threshold: 0.5 });
+            slides.forEach(slide => observer.observe(slide));
+
+            tsParticles.load("particles-js", {
+                fpsLimit: 120,
+                particles: {
+                    number: { value: 120, density: { enable: true, value_area: 800 } },
+                    color: { value: "#ffffff" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.8, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+                    size: { value: 2, random: true },
+                    links: { enable: true, distance: 150, color: "#ffffff", opacity: 0.1, width: 1 },
+                    move: { enable: true, speed: 1.5, direction: "none", random: true, straight: false, outModes: { default: "bounce" } },
+                },
+                interactivity: {
+                    events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true },
+                    modes: { grab: { distance: 140, links: { opacity: 0.3 } }, push: { quantity: 4 } },
+                },
+                retina_detect: true,
+            });
+
+            const mainAnimatedText = document.getElementById('animated-text');
+            if(mainAnimatedText) {
+                let mainText = "لا لتوطين الأفارقة في المغرب.";
+                let isDeleting = false; let index = 0;
+                function mainTyper() {
+                    mainAnimatedText.textContent = mainText.substring(0, index);
+                    if (!isDeleting) {
+                        if (index < mainText.length) { index++; setTimeout(mainTyper, 150); }
+                        else { isDeleting = true; setTimeout(mainTyper, 3000); }
+                    } else {
+                        if (index > 0) { index--; setTimeout(mainTyper, 75); }
+                        else { isDeleting = false; setTimeout(mainTyper, 500); }
+                    }
+                }
+                setTimeout(mainTyper, 1000);
+            }
+        });
+    </script>
+    <!-- نفس الأمر طرا لشعب الفلسطيني -->
+</body>
+    <!-- التصميم كامل من طرفي أنا  لا أحد يشجعني على هدا العمل غير سياسة القمعية التي تمارس على أبناء بلادي من طرف السلطة و المحكمة ولا حق يشاع بأنها دولة الحق والقانون ولكن ما رأينا فيها الإ العكس. 
+    من اجل التغيير و المناشدة و تضامن كمغريبي حقيقي أصيل لا أقبل بالأفارقة بجانبي و لا بجانب بنت بلادي 
+    شكرا لكل من ساهم في تضامن مع هذه الحملة و تحية لكم. -->
+</html>
